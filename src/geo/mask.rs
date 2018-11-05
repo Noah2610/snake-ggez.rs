@@ -16,9 +16,10 @@ pub enum Origin {
 }
 
 pub trait Mask {
-  fn point(&self)  -> &Point;
-  fn size(&self)   -> &Size;
-  fn origin(&self) -> &Origin;
+  fn point(&self)         -> &Point;
+  fn point_mut(&mut self) -> &mut Point;
+  fn size(&self)          -> &Size;
+  fn origin(&self)        -> &Origin;
 
   fn rectangle(&self) -> ::ggez::graphics::Rect {
     let top_left: Point = self.top_left();

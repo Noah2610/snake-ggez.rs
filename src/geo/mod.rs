@@ -25,4 +25,8 @@ impl Size {
   pub fn new(w: f32, h: f32) -> Self {
     Self { w, h }
   }
+
+  pub fn center(&self) -> Point {
+    Point::new(self.w / 2.0, self.h / 2.0)
+  }
 }
