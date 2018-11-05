@@ -1,5 +1,6 @@
 pub mod mask;
 
+#[derive(Clone)]
 pub struct Point {
   pub x: f32,
   pub y: f32
@@ -14,7 +15,20 @@ impl Point {
     self.x += point.x;
     self.y += point.y;
   }
+
+  pub fn set(&mut self, point: &Point) {
+    self.x = point.x;
+    self.y = point.y;
+  }
 }
+
+// impl Clone for Point {
+//   fn clone(&self) -> Self {
+//     Self {
+//       ..*self
+//     }
+//   }
+// }
 
 pub struct Size {
   pub w: f32,

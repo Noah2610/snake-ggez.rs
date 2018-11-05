@@ -34,11 +34,13 @@ pub mod entity {
       mask::Origin
     };
 
-    const SIZE_SQ:           f32    = 32.0;
-    pub const SIZE:          Size   = Size { w: SIZE_SQ, h: SIZE_SQ };
-    pub const ORIGIN:        Origin = Origin::TopLeft;
-    pub const COLOR:         Color  = [0.25, 0.75, 0.5, 1.0];
-    pub const STEP_SIZE:     f32    = SIZE_SQ;
-    pub const STEP_EVERY_MS: u64    = 400;
+    pub const SIZE_SQ:        f32    = 32.0;
+    pub const SIZE:           Size   = Size { w: SIZE_SQ, h: SIZE_SQ };
+    pub const ORIGIN:         Origin = Origin::TopLeft;
+    pub const COLOR:          Color  = [0.25, 0.75, 0.5, 1.0];
+    pub const BODY_COLOR:     Color  = [0.1, 0.5, 0.25, 1.0];
+    pub const STEP_SIZE:      f32    = SIZE_SQ;
+    pub const STEP_EVERY_MS:  u64    = 400;
+    pub const INITIAL_BODIES: u32    = 5;
   }
 }

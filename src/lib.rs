@@ -20,7 +20,7 @@ use geo::{
 };
 use entity::{
   Entity,
-  Player
+  player::Player
 };
 use direction::Direction;
 
