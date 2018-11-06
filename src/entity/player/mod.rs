@@ -15,6 +15,7 @@ use ::geo::{
 use super::Entity;
 use ::color::Color;
 use ::direction::Direction;
+use ::grid::{Grid, Cell};
 use ::settings::entity::player::*;
 
 mod head;
@@ -23,7 +24,9 @@ mod body;
 use self::head::Head;
 use self::body::Body;
 
-pub struct Player {
+pub struct Player<'a> {
+  grid:         &'a Grid,
+  cell:         &'a Cell,
   head:         Head,
   bodies:       Vec<Body>,
   direction:    Direction,
@@ -31,15 +34,18 @@ pub struct Player {
   last_step_at: Instant
 }
 
-impl Player {
-  pub fn new(point: Point) -> Self {
+impl<'a> Player<'a> {
+  pub fn new(point: Point, grid: &'a Grid) -> Self {
     let mut bodies: Vec<Body> = Vec::new();
     for i in (1 ..= INITIAL_BODIES) {
       let body_point: Point = Point::new(point.x - SIZE_SQ * (i as f32), point.y);
       bodies.push(Body::new(body_point));
     };
     let head: Head = Head::new(point);
+    let cell: &Cell = grid.get_cell_for(&point);
     Self {
+      grid:         grid,
+      cell:         cell,
       head:         head,
       bodies:       bodies,
       direction:    Direction::Right,
@@ -59,7 +65,11 @@ impl Player {
     if Instant::now() - self.last_step_at < Duration::from_millis(STEP_EVERY_MS) {
       return Ok(());
     }
+    self.step(_ctx)?;
+    return Ok(());
+  }
 
+  fn step(&mut self, _ctx: &mut Context) -> GameResult<()> {
     let point_incr: Point = match self.direction {
       Direction::Up    => Point::new(
         0.0,

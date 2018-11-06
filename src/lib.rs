@@ -14,6 +14,7 @@ mod color;
 mod geo;
 mod entity;
 mod direction;
+mod grid;
 
 use geo::{
   Point
@@ -23,6 +24,7 @@ use entity::{
   player::Player
 };
 use direction::Direction;
+use grid::Grid;
 
 use settings::meta::*;
 use settings::game::*;
@@ -45,26 +47,29 @@ pub fn run() -> GameResult<()> {
   return event::run(&mut ctx, &mut state);
 }
 
-struct GameState {
-  player:      Player,
+struct GameState<'a> {
+  grid:        Grid,
+  player:      Player<'a>,
   last_update: Instant
 }
 
-impl GameState {
+impl<'a> GameState<'a> {
   pub fn new() -> Self {
     let mut center: Point = WINDOW_SIZE.center();
     center.add(&Point::new(
         (settings::entity::player::SIZE.w / 2.0) * -1.0,
         (settings::entity::player::SIZE.h / 2.0) * -1.0
     ));
+    let grid: Grid = Grid::new();
     Self {
-      player: Player::new(center),
+      grid:        grid,
+      player:      Player::new(center, &grid),
       last_update: Instant::now()
     }
   }
 }
 
-impl event::EventHandler for GameState {
+impl<'a> event::EventHandler for GameState<'a> {
   fn key_down_event(
     &mut self,
     ctx:     &mut Context,

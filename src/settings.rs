@@ -4,7 +4,7 @@ pub mod meta {
   pub const TITLE:        &str = "Snake";
   pub const AUTHOR:       &str = "Noah R";
   pub const WINDOW_TITLE: &str = "Snake!";
-  pub const WINDOW_SIZE:  Size   = Size { w: 600.0, h: 600.0 };
+  pub const WINDOW_SIZE:  Size = Size { w: 600.0, h: 600.0 };
 }
 
 pub mod game {
@@ -43,4 +43,11 @@ pub mod entity {
     pub const STEP_EVERY_MS:  u64    = 400;
     pub const INITIAL_BODIES: u32    = 5;
   }
+}
+
+pub mod grid {
+  use ::geo::Size;
+
+  pub const SIZE:      Size = super::meta::WINDOW_SIZE.clone();
+  pub const CELL_SIZE: Size = super::entity::player::SIZE.clone();
 }

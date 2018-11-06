@@ -30,6 +30,7 @@ impl Point {
 //   }
 // }
 
+#[derive(Clone)]
 pub struct Size {
   pub w: f32,
   pub h: f32
