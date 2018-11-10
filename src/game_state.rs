@@ -103,7 +103,7 @@ impl GameState {
     // ... with food
     let food_opt: Option<usize> = self.foods.iter().enumerate()
       .find_map( |(index, food)|
-                 if food.point() == self.player.head.point() {
+                 if food.intersects(&self.player.head) {
                    Some(index)
                  } else { None }
       );
