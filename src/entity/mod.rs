@@ -11,6 +11,7 @@ use ::geo::{
 use ::color::Color;
 
 pub mod player;
+pub mod food;
 
 pub trait Entity: Mask {
   fn color(&self) -> Color;

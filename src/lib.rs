@@ -1,11 +1,11 @@
 extern crate ggez;
+extern crate rand;
 
 use ggez::{
   GameResult,
   Context,
   graphics,
-  event,
-  event::{Keycode}
+  event
 };
 
 mod settings;
@@ -16,10 +16,6 @@ mod entity;
 mod direction;
 
 use game_state::GameState;
-use entity::{
-  Entity,
-  player::Player
-};
 
 use settings::meta::*;
 use settings::game::BG_COLOR;

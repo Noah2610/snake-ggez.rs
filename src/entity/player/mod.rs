@@ -94,6 +94,13 @@ impl Player {
     return Ok(());
   }
 
+  pub fn add_body(&mut self) {
+    let point: Point = self.bodies.last().expect("Player/Snake should always have at least one Body.").point().clone();
+    self.bodies.push(
+      Body::new(point)
+    );
+  }
+
   pub fn update(&mut self, _ctx: &mut Context) -> GameResult<()> {
     return Ok(());
   }
