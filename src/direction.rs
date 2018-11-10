@@ -6,7 +6,7 @@ pub enum Direction {
   Right
 }
 
-use Direction::*;
+use self::Direction::*;
 
 impl Direction {
   pub fn is_opposite(&self, other: &Direction) -> bool {

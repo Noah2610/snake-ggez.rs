@@ -11,6 +11,14 @@ impl Point {
     Self { x, y }
   }
 
+  pub fn combine(points: Vec<&Point>) -> Point {
+    let mut point_acc: Point = Point::new(0.0, 0.0);
+    for point in points {
+      point_acc.add(point);
+    }
+    return point_acc;
+  }
+
   pub fn add(&mut self, point: &Point) {
     self.x += point.x;
     self.y += point.y;

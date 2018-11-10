@@ -24,11 +24,10 @@ use self::head::Head;
 use self::body::Body;
 
 pub struct Player {
-  head:         Head,
-  bodies:       Vec<Body>,
-  direction:    Direction,
-  last_step:    Direction,
-  last_step_at: Instant
+  pub head:   Head,
+  pub bodies: Vec<Body>,
+  direction:  Direction,
+  last_step:  Direction
 }
 
 impl Player {
@@ -43,8 +42,7 @@ impl Player {
       head:         head,
       bodies:       bodies,
       direction:    Direction::Right,
-      last_step:    Direction::Right,
-      last_step_at: Instant::now()
+      last_step:    Direction::Right
     }
   }
 
@@ -55,11 +53,7 @@ impl Player {
     self.direction = direction;
   }
 
-  pub fn update(&mut self, _ctx: &mut Context) -> GameResult<()> {
-    if Instant::now() - self.last_step_at < Duration::from_millis(STEP_EVERY_MS) {
-      return Ok(());
-    }
-
+  pub fn step(&mut self) -> GameResult<()> {
     let point_incr: Point = match self.direction {
       Direction::Up    => Point::new(
         0.0,
@@ -96,7 +90,11 @@ impl Player {
     // self.head.move_by(&point_incr);
 
     self.last_step = self.direction.clone();
-    self.last_step_at = Instant::now();
+
+    return Ok(());
+  }
+
+  pub fn update(&mut self, _ctx: &mut Context) -> GameResult<()> {
     return Ok(());
   }
 

@@ -3,17 +3,7 @@ use super::{
   Size
 };
 
-pub enum Origin {
-  TopLeft,
-  TopRight,
-  TopCenter,
-  BottomLeft,
-  BottomRight,
-  BottomCenter,
-  CenterLeft,
-  CenterRight,
-  Center
-}
+use self::Side::*;
 
 pub trait Mask {
   fn point(&self)         -> &Point;
@@ -30,28 +20,35 @@ pub trait Mask {
     ].into();
   }
 
-  fn intersects<M: Mask>(&self, other: M) -> bool {
+  fn intersects<M: Mask>(&self, other: &M) -> bool {
     let self_sides:  SideCollection = self.sides();
     let other_sides: SideCollection = other.sides();
     return (
+      self.is_same(other) ||
       (
         (
-          self_sides.left >= other_sides.left &&
-          self_sides.left <= other_sides.right
-        ) || (
-          self_sides.left  <= other_sides.left &&
-          self_sides.right >= other_sides.left
-        )
-      ) && (
-        (
-          self_sides.top >= other_sides.top &&
-          self_sides.top <= other_sides.bottom
-        ) || (
-          self_sides.top    <= other_sides.top &&
-          self_sides.bottom >= other_sides.top
+          (
+            self_sides.left > other_sides.left &&
+            self_sides.left < other_sides.right
+          ) || (
+            self_sides.left  < other_sides.left &&
+            self_sides.right > other_sides.left
+          )
+        ) && (
+          (
+            self_sides.top > other_sides.top &&
+            self_sides.top < other_sides.bottom
+          ) || (
+            self_sides.top    < other_sides.top &&
+            self_sides.bottom > other_sides.top
+          )
         )
       )
-    );
+      );
+  }
+
+  fn is_same<M: Mask>(&self, other: &M) -> bool {
+    self.sides() == other.sides()
   }
 
   fn top_left(&self) -> Point {
@@ -98,27 +95,50 @@ pub trait Mask {
     }
   }
 
-  fn side(&self, side: char) -> f32 {
+  fn center(&self) -> Point {
+    Point::combine(vec![self.point(), &self.size().center()])
+  }
+
+  fn side(&self, side: Side) -> f32 {
     let top_left: Point = self.top_left();
     return match side {
-      't' => top_left.y,
-      'b' => top_left.y + self.size().h,
-      'l' => top_left.x,
-      'r' => top_left.x + self.size().w,
-      _   => panic!["geo::Mask::side() expected one of 't', 'b', 'l', or 'r'"]
+      Top    => top_left.y,
+      Bottom => top_left.y + self.size().h,
+      Left   => top_left.x,
+      Right  => top_left.x + self.size().w
     };
   }
 
   fn sides(&self) -> SideCollection {
     SideCollection::new(
-      self.side('t'),
-      self.side('b'),
-      self.side('l'),
-      self.side('r')
+      self.side(Top),
+      self.side(Bottom),
+      self.side(Left),
+      self.side(Right)
     )
   }
 }
 
+pub enum Origin {
+  TopLeft,
+  TopRight,
+  TopCenter,
+  BottomLeft,
+  BottomRight,
+  BottomCenter,
+  CenterLeft,
+  CenterRight,
+  Center
+}
+
+enum Side {
+  Top,
+  Bottom,
+  Left,
+  Right
+}
+
+#[derive(PartialEq)]
 struct SideCollection {
   top:    f32,
   bottom: f32,
