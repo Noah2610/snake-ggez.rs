@@ -21,6 +21,8 @@ pub mod game {
 
   pub const CELL_SIZE_SQ:       f32    = 32.0;
   pub const CELL_SIZE:          Size   = Size { w: CELL_SIZE_SQ, h: CELL_SIZE_SQ };
+
+  pub const SCORE_FONT_SIZE:    u32    = 24;
 }
 
 pub mod controls {

@@ -28,6 +28,11 @@ impl Point {
     self.x = point.x;
     self.y = point.y;
   }
+
+  // gotta learn how to write `into()` methods
+  pub fn point2(&self) -> ::ggez::graphics::Point2 {
+    ::ggez::graphics::Point2::new(self.x, self.y)
+  }
 }
 
 pub struct Size {

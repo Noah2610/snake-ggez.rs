@@ -20,6 +20,7 @@ use ::entity::{
   food::Food
 };
 use ::direction::Direction;
+use ::color;
 
 use ::settings::game::*;
 use ::settings::meta::WINDOW_SIZE;
@@ -39,24 +40,28 @@ pub struct GameState {
   player:                Player,
   foods:                 Vec<Food>,
   running:               bool,
+  score:                 u32,
+  font:                  graphics::Font,
   last_player_move:      Instant,
   last_check_spawn_food: Instant,
-  last_update:           Instant
+  last_update:           Instant,
 }
 
 impl GameState {
-  pub fn new() -> Self {
-    Self {
+  pub fn new(ctx: &mut Context) -> GameResult<Self> {
+    return Ok(Self {
       point:                 Point::new(0.0, 0.0),
       size:                  WINDOW_SIZE,
       origin:                ORIGIN,
       player:                Player::new(Point::new(0.0, 0.0)),
       foods:                 Vec::new(),
       running:               true,
+      score:                 0,
+      font:                  graphics::Font::new(ctx, "/dejavu.ttf", SCORE_FONT_SIZE)?,
       last_player_move:      Instant::now(),
       last_check_spawn_food: Instant::now(),
-      last_update:           Instant::now()
-    }
+      last_update:           Instant::now(),
+    });
   }
 
   fn check_move_player(&mut self) -> GameResult<()> {
@@ -109,10 +114,15 @@ impl GameState {
       );
     if let Some(index) = food_opt {
       self.player.add_body();
+      self.increase_score(1);
       self.foods.remove(index);
     }
 
     return Ok(());
+  }
+
+  fn increase_score(&mut self, incr: u32) {
+    self.score += incr;
   }
 
   fn game_over(&mut self) {
@@ -161,6 +171,14 @@ impl GameState {
     self.player.head.point() != point                                &&
       !self.player.bodies.iter().any( |body| body.point() == point ) &&
       !self.foods.iter().any( |food| food.point() == point )
+  }
+
+  fn draw_text(&self, ctx: &mut Context) -> GameResult<()> {
+    graphics::set_color(ctx, color::BLACK.into())?;
+    let point: Point = Point::new(16.0, 16.0);
+    let text = graphics::Text::new(ctx, &self.score.to_string(), &self.font)?;
+    graphics::draw(ctx, &text, point.point2(), 0.0)?;
+    return Ok(());
   }
 }
 
@@ -216,11 +234,16 @@ impl event::EventHandler for GameState {
   fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
     graphics::clear(ctx);
 
+    // Draw FOOD
     for food in &mut self.foods {
       food.draw(ctx)?;
     }
 
+    // Draw PLAYER head and bodies
     self.player.draw(ctx)?;
+
+    // Draw TEXT
+    self.draw_text(ctx)?;
 
     graphics::present(ctx);
     ::ggez::timer::yield_now();

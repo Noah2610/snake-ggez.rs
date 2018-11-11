@@ -1,6 +1,9 @@
 extern crate ggez;
 extern crate rand;
 
+use std::env;
+use std::path;
+
 use ggez::{
   GameResult,
   Context,
@@ -32,7 +35,13 @@ pub fn run() -> GameResult<()> {
     )
   ).build()?;
 
+  if let Ok(manifest_dir) = env::var("CARGO_MANIFEST_DIR") {
+    let mut path = path::PathBuf::from(manifest_dir);
+    path.push("resources");
+    ctx.filesystem.mount(&path, true);
+  }
+
   graphics::set_background_color(&mut ctx, BG_COLOR.into());
-  let mut state: GameState = GameState::new();
+  let mut state: GameState = GameState::new(&mut ctx)?;
   return event::run(&mut ctx, &mut state);
 }
